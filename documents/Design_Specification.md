@@ -81,7 +81,10 @@ make it easier to work with, instead of using directly dictionary data type, the
 application validates if the input data is correct according to the requirements
 INPUT_XXXX, the convert the keys of the dictionaty to corresponding classes.
 
-### Transition class
+
+### Data type
+
+#### Transition class
 
 The Transition class has the following properties:
 
@@ -99,7 +102,7 @@ get_param_name(param_str)
 get_param_data_type(param_str)
 ```
 
-### State class
+#### State class
 The State class has the following properties:
 
 ```
@@ -123,7 +126,7 @@ is_state_int() -> bool
 ```
 
 
-### Graph class
+#### Graph class
 
 The Graph class has the following properties:
 
@@ -138,4 +141,58 @@ The Graph class has the following methods:
 add_state(State)
 get_state(name:string or index:int) -> State
 get_state_list() -> list(string)
+```
+
+### Validation
+
+For each graph, the following conditions must be check:
+
+* graph_name is existing. If not, raise error.
+* states is existing. If not raise error.
+* states has type list and number of element is more than 0. If not, raise error.
+
+If the above conditions are OK, a graph object is created
+
+For each state, the following conditions must be check:
+
+* state_name is existing. If not, raise error.
+* state_type is existing. The value of state_type is the defined enum string. If
+not, raise error.
+* transition is existing. If not raise error.
+* transition is a list and has more than 0 element. If not raise error.
+
+If the above conditions are satisfied, a state object is created.
+
+For each transitions, the following conditions must be check:
+
+* transition_name is existing. If not, raise error.
+* params is existing and is a list. If not raise error.
+* transition_type is existing. The value of transition_type is the defined enum string. If
+not, raise error.
+* If transition_type is tau, the params must by empty.
+* transition is existing. If not raise error.
+* next_state is existing. If not raise error.
+* The value of next_state must be in the list of states. If not, raise error. 
+
+If the above conditions are satisfied, a transition object is created. This 
+object is added to the outgoing transtion list of the state it belongs to and 
+added to the incoming transitions list of the state defined in next_state.
+
+## Compatibility calculation
+
+The compatibility calculation can be carried out only if the validation phase 
+has been passed. Number of calculation iteration is based on the input from the 
+CLI.
+
+The result of the calulation is a list of compatibility matrix with the size of
+the number of iteration + 1.
+
+Each compatibility matrix is an object based on DataMatrix class. The DataMatrix
+class is defined as follows:
+
+```
+matrix:list(list(DataElement))
+------------------------------------------------------------
+get_element_value_by_name(row_name, column_name) -> float
+get_element_value_by_index(row_index, column_index) ->float
 ```
