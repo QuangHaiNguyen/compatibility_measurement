@@ -120,6 +120,8 @@ add_outgoing_transition(Transition)
 get_incoming_transition(name:string or index:int) -> Transition
 get_outgoing_transition(name:string or index:int) -> Transition
 get_incoming_transition_list() -> list(string)
+get_num_of_incoming_transistions()->int
+get_num_of_outgoing_transitions()->int
 get_outgoing_transition_list() -> list(string)
 is_state_final() -> bool
 is_state_int() -> bool
@@ -141,6 +143,7 @@ The Graph class has the following methods:
 add_state(State)
 get_state(name:string or index:int) -> State
 get_state_list() -> list(string)
+get_num_of_states()->int
 ```
 
 ### Validation
@@ -187,12 +190,66 @@ CLI.
 The result of the calulation is a list of compatibility matrix with the size of
 the number of iteration + 1.
 
-Each compatibility matrix is an object based on DataMatrix class. The DataMatrix
-class is defined as follows:
+Each compatibility matrix is a data frame from pandas module, where columns and
+indexes are the name of the state.
+
+Rational for using padas data frame:
+
+* Better presentation of the table
+* Value can be accessed by state names (index and column)
+
+### Calculation flow
 
 ```
-matrix:list(list(DataElement))
-------------------------------------------------------------
-get_element_value_by_name(row_name, column_name) -> float
-get_element_value_by_index(row_index, column_index) ->float
+for iteration = 0 to iteration = k
+    create frame with default value
+    if iteration = 0
+        Done    
+    else
+        create frame with deafault value
+        For each state in input_graph
+            Calculate the obs_comp
+            Calculate the fw and bw_propagation
+            Calculate state_comp
+            Calculate compatibility
 ```
+
+Interfaces design
+
+```
+create_init_frame(state:State, state:State) -> data_frame
+
+calculate_obs_compatibility(state:State, state:State, prev_matrix)
+
+calculate_fw_propagation(state:State, state:State, prev_matrix)
+
+calculate_bw_propagation(state:State, state:State, prev_matrix)
+
+calculate_state_compatibility(state:State, state:State, fw_propagation, bw_propagation)
+
+calculate_compatibility(state:State, state:State, prev_matrix)
+```
+
+Inside the function ```calculate_obs_compatibility```, further operations are executed:
+
+* Calculate the sum of best compatibility between emissions and receptions
+* the sum is based on:
+    * the number of emissions
+    * number of receptions
+    * label compatibility between (emission, reception)
+    * Compatibility of the next state, resultinh from the (emssion, transition) above
+* The label compatibility is based on:
+    * Number of unshare types between 2 lists
+    * Must get the list of types 
+    * Get the list of unshare types based on the lists of types
+
+
+Inside the function ```calculate_fw_propagation```, further operations are executed:
+* Based on the point of view of two states. Let's assume one state
+* If that state has tau, we call this function again on the forward neighbor state
+* If that state has no tau, it is equal to ```calculate_obs_compatibility```
+
+Inside the function ```calculate_state_compatibility```, further operations are executed:
+* we need the value w1 based on the number of outgoing transition
+* we need the value w2 based on the number of incoming transition
+* we need the funky w3 value, which is according to the paper
