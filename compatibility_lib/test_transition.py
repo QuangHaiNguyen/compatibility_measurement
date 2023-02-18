@@ -60,4 +60,4 @@ def test_create_tau_transition_with_empty_params():
     tau_transition = Transition(name="test_transition",
                                 next_state="next_state",
                                 type=TransitionType.TAU)
-    assert tau_transition.params == None
+    assert tau_transition.params == []

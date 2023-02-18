@@ -52,7 +52,7 @@ class Transition():
     def __init__(self, name: str,
                  type: TransitionType,
                  next_state: str,
-                 params: list = None) -> None:
+                 params: list = []) -> None:
         """__init__ constructore for Transition class
 
         Args:
@@ -117,8 +117,19 @@ class Transition():
 class State():
     def __init__(self, name: str,
                  type: StateType,
-                 incoming: list = None,
-                 outgoing: list = None) -> None:
+                 incoming: list = [],
+                 outgoing: list = []) -> None:
+        """Constructor of the State class
+        Args:
+            name (str): name of the state
+            type (StateType): type of the state
+            incoming (list, optional): Incoming transition. Defaults to None.
+            outgoing (list, optional): Outgoing transition. Defaults to None.
+
+        Raises:
+            Exception: Initial state does not have incoming transition
+            Exception: Final state does not have outgoing transition
+        """
         self._name = name
         self._type = type
         self._incoming = incoming
@@ -128,29 +139,53 @@ class State():
             raise Exception("Initial state does not have incoming transition")
     
         if self._type == StateType.FINAL and self._outgoing:
-            raise Exception("Fianl state does not have outgoing transition")
+            raise Exception("Final state does not have outgoing transition")
 
     def add_incoming_transition(self, transition: Transition):
+        """Add an incoming transition
+
+        Args:
+            transition (Transition): transition to be added
+
+        Raises:
+            Exception: Initial state does not have incoming transition
+        """
         if transition is None:
             return
         
         logger.debug("add new incoming transition [name = {}]".format(transition.name))
-        if self._type == StateType.INIT and self._incoming:
+        if self._type == StateType.INIT:
             raise Exception("Initial state does not have incoming transition")
         else:
             self._incoming.append(transition)
     
     def add_outgoing_transition(self, transition: Transition):
+        """Add an outgoing transition
+
+        Args:
+            transition (Transition): transition to be added
+
+        Raises:
+            Exception: Final state does not have outgoing transition
+        """
         if transition is None:
             return
         
         logger.debug("add new outgoing transition [name = {}]".format(transition.name))
-        if self._type == StateType.FINAL and self._outgoing:
+        if self._type == StateType.FINAL:
             raise Exception("Final state does not have outgoing transition")
         else:
             self._outgoing.append(transition)
     
     def get_incoming_transtition(self, name: str) -> Transition:
+        """Get an incoming transition
+
+        Args:
+            name (str): name of the transition
+
+        Returns:
+            Transition: incoming transition
+        """
         logger.debug("get incoming transition [name = {}]".format(name))
         ret_transition = None
         
@@ -165,6 +200,14 @@ class State():
         return ret_transition
     
     def get_outgoing_transtition(self, name: str) -> Transition:
+        """Get out going transition
+
+        Args:
+            name (str): name of the transition
+
+        Returns:
+            Transition: outgoing transition
+        """
         logger.debug("get outgoing transition [name = {}]".format(name))
         ret_transition = None
         
@@ -180,18 +223,45 @@ class State():
         return ret_transition
     
     def get_incoming_transitions_list(self) -> list:
+        """Get the list on incoming transitions
+
+        Returns:
+            list: incoming transitions list
+        """
         return self._incoming
     
     def get_outgoing_transitions_list(self) -> list:
+        """Get the list of outgoing transitions
+
+        Returns:
+            list: outgoing transitions list
+        """
         return self._outgoing
     
     def get_num_of_incoming_transistions(self) -> int:
+        """Get number of incoming transition
+
+        Returns:
+            int: number of transitions
+        """
         return len(self._incoming)
     
     def get_num_of_outgoing_transitions(self) -> int:
+        """Get number of outgoing transition
+
+        _extended_summary_
+
+        Returns:
+            int: number of transitions
+        """
         return len(self._outgoing)
     
     def is_final_state(self) -> bool:
+        """Check if state is final state
+
+        Returns:
+            bool: True if final state
+        """
         if self._type == StateType.FINAL:
             logger.debug("[state = {}] is FINAL state".format(self._name))
             return True
@@ -200,6 +270,11 @@ class State():
             return False
     
     def is_initial_state(self) -> bool:
+        """check if state is initial state
+
+        Returns:
+            bool: True if initial state
+        """
         if self._type == StateType.INIT:
             logger.debug("[state = {}] is INIT state".format(self._name))
             return True

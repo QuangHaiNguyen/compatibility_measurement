@@ -90,12 +90,14 @@ def test_create_int_final_state(init_state:State, final_state:State):
     assert final_state.is_initial_state() == False
     
     assert init_state.get_num_of_outgoing_transitions() == 2
+    assert init_state.get_num_of_incoming_transistions() == 0
     incoming = init_state.get_incoming_transitions_list()
-    assert incoming == None
+    assert incoming == []
     
     assert final_state.get_num_of_incoming_transistions() == 2
+    assert final_state.get_num_of_outgoing_transitions() == 0
     outgoing = final_state.get_outgoing_transitions_list()
-    assert outgoing == None
+    assert outgoing == []
     
     
 def test_get_transition(normal_state:State, transitions):
