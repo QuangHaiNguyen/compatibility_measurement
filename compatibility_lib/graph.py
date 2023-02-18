@@ -281,12 +281,68 @@ class State():
         else:
             logger.debug("[state = {}] is NOT INIT state".format(self._name))
             return False
+        
+    def get_name(self) -> str:
+        """Get name of the state
+
+        Returns:
+            str: name of the state
+        """
+        return self._name
     
+class Graph():
+    def __init__(self, name: str, states: list = []) -> None:
+        """Constructor of Graph class
+
+        Args:
+            name (str): name of the graph
+            states (list, optional): states of the graph. Defaults to [].
+        """
+        self._name = name
+        self._states = states
+        
+    def add_state(self, state: State):
+        """Add new state to the graph
+
+        Args:
+            state (State): new state
+        """
+        if state != None:
+            logger.debug("add [state = {}] to graph".format(state.get_name()))
+            self._states.append(state)
+        
+    def get_state(self, state_name: str) ->State:
+        """Get a state
+
+        Args:
+            state_name (str): name of the state
+
+        Returns:
+            State: state or None
+        """
+        logger.debug("looking for [state = {}]".format(state_name))
+        ret_state = None
+    
+        for state in self._states:
+            if state_name == state.get_name():
+                ret_state = state
+                logger.debug("state found")
+                break
+            else:
+                pass
+        
+        if ret_state == None:
+            logger.warning("state not found")
+        return ret_state
+    
+    def get_states_list(self) -> list:
+        """Get all the states of the graph
+
+        Returns:
+            list: state list
+        """
+        return self._states
+        
     
 if __name__ == '__main__':
-    transition = Transition(name="test_transition",
-                            next_state="next_state",
-                            type=TransitionType.EMISSION,
-                            params=["param1:type1", "param2:type2", "param3:type3"])
-    logger.info("list of data types: ")
-    logger.info(transition.get_data_types())
+    pass
