@@ -43,6 +43,11 @@ class TransitionType(Enum):
     EMISSION = auto()
     RECPTION = auto()
 
+class StateType(Enum):
+    INIT = auto()
+    FINAL = auto()
+    NORMAL = auto()
+
 class Transition():
     def __init__(self, name: str,
                  type: TransitionType,
@@ -109,7 +114,100 @@ class Transition():
         
         return data_types
 
+class State():
+    def __init__(self, name: str,
+                 type: StateType,
+                 incoming: list = None,
+                 outgoing: list = None) -> None:
+        self._name = name
+        self._type = type
+        self._incoming = incoming
+        self._outgoing = outgoing
+        
+        if self._type == StateType.INIT and self._incoming:
+            raise Exception("Initial state does not have incoming transition")
+    
+        if self._type == StateType.FINAL and self._outgoing:
+            raise Exception("Fianl state does not have outgoing transition")
 
+    def add_incoming_transition(self, transition: Transition):
+        if transition is None:
+            return
+        
+        logger.debug("add new incoming transition [name = {}]".format(transition.name))
+        if self._type == StateType.INIT and self._incoming:
+            raise Exception("Initial state does not have incoming transition")
+        else:
+            self._incoming.append(transition)
+    
+    def add_outgoing_transition(self, transition: Transition):
+        if transition is None:
+            return
+        
+        logger.debug("add new outgoing transition [name = {}]".format(transition.name))
+        if self._type == StateType.FINAL and self._outgoing:
+            raise Exception("Final state does not have outgoing transition")
+        else:
+            self._outgoing.append(transition)
+    
+    def get_incoming_transtition(self, name: str) -> Transition:
+        logger.debug("get incoming transition [name = {}]".format(name))
+        ret_transition = None
+        
+        if self._type != StateType.INIT:
+            for transition in self._incoming:
+                if name == transition.name:
+                    ret_transition = transition
+                    logger.debug("transition found")
+                    break
+        else:
+            logger.warning("Initial state has no incoming transitions")
+        return ret_transition
+    
+    def get_outgoing_transtition(self, name: str) -> Transition:
+        logger.debug("get outgoing transition [name = {}]".format(name))
+        ret_transition = None
+        
+        if self._type != StateType.FINAL:
+            for transition in self._outgoing:
+                if name == transition.name:
+                    ret_transition = transition
+                    logger.debug("transition found")
+                    break
+        else:
+            logger.warning("Final state has no outgoing transitions")
+                    
+        return ret_transition
+    
+    def get_incoming_transitions_list(self) -> list:
+        return self._incoming
+    
+    def get_outgoing_transitions_list(self) -> list:
+        return self._outgoing
+    
+    def get_num_of_incoming_transistions(self) -> int:
+        return len(self._incoming)
+    
+    def get_num_of_outgoing_transitions(self) -> int:
+        return len(self._outgoing)
+    
+    def is_final_state(self) -> bool:
+        if self._type == StateType.FINAL:
+            logger.debug("[state = {}] is FINAL state".format(self._name))
+            return True
+        else:
+            logger.debug("[state = {}] is NOT FINAL state".format(self._name))
+            return False
+    
+    def is_initial_state(self) -> bool:
+        if self._type == StateType.INIT:
+            logger.debug("[state = {}] is INIT state".format(self._name))
+            return True
+        else:
+            logger.debug("[state = {}] is NOT INIT state".format(self._name))
+            return False
+    
+    
 if __name__ == '__main__':
     transition = Transition(name="test_transition",
                             next_state="next_state",
