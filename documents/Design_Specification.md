@@ -98,7 +98,7 @@ next_state:string
 The Transition class has the following methods:
 
 ```
-get_param_name(param_str)
+get_data_types()
 get_param_data_type(param_str)
 ```
 
