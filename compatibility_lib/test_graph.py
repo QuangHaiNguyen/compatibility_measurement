@@ -11,9 +11,10 @@ __status__ = "Development"
 """
 
 import pytest
-from graph import Transition, TransitionType
-from graph import State, StateType
-from graph import Graph
+from .graph import Transition, TransitionType
+from .graph import State, StateType
+from .graph import Graph
+
 
 @pytest.fixture
 def transitions() -> tuple:

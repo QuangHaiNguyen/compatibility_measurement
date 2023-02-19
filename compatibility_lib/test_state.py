@@ -11,8 +11,9 @@ __status__ = "Development"
 """
 
 import pytest
-from graph import Transition, TransitionType
-from graph import State, StateType
+from .graph import Transition, TransitionType
+from .graph import State, StateType
+
 
 
 @pytest.fixture
@@ -107,6 +108,21 @@ def test_get_transition(normal_state:State, transitions):
     assert transitions[3] == normal_state.get_outgoing_transtition(transitions[3].name)
     
     
+def test_get_emision_transition(normal_state:State, transitions):
+    emissions = normal_state.get_outgoing_emission_list()
+    
+    assert len(emissions) == 1
+    assert transitions[2] == emissions[0]
+    
+    
+def test_get_reception_transition(normal_state:State, transitions):
+    reception = normal_state.get_outgoing_reception_list()
+    
+    assert len(reception) == 1
+    assert transitions[3] == reception[0]
+    
+    
+
 def test_set_transition(normal_state:State, transitions):
     new_transition = Transition(name="new_transition",
                             next_state="new_transition_next",
