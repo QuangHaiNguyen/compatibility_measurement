@@ -15,6 +15,7 @@ from .graph import Transition, TransitionType
 from .graph import State, StateType
 from .graph import Graph
 
+
 @pytest.fixture
 def transitions() -> tuple:
     transition1 = Transition(name="test_transition_1",

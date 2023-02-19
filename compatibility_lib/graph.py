@@ -19,6 +19,7 @@ import logging
 
 # create logger
 logger = logging.getLogger("GRAPH")
+
 logger.setLevel(logging.DEBUG)
 #logger.setLevel(logging.INFO)
 #logger.setLevel(logging.WARNING)
@@ -244,7 +245,7 @@ class State():
             list: outgoing transitions list
         """
         return self._outgoing
-    
+        
     
     def get_outgoing_emission_list(self) -> list:
         """Return the list of outgoing emission transition
@@ -274,7 +275,6 @@ class State():
                 reception.append(transition)
 
         return reception
-    
     
     def get_num_of_incoming_transistions(self) -> int:
         """Get number of incoming transition
@@ -357,6 +357,7 @@ class State():
             
 class Graph():
     def __init__(self, name: str, states: list = None) -> None:
+
         """Constructor of Graph class
 
         Args:
@@ -364,6 +365,7 @@ class Graph():
             states (list, optional): states of the graph. Defaults to [].
         """
         self._name = name
+
         if states == None:
             self._states = []
         else:
@@ -425,6 +427,7 @@ class Graph():
         print("#")
         print("####################################################################################")
         print()
+
         
     
 if __name__ == '__main__':

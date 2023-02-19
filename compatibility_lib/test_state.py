@@ -15,6 +15,7 @@ from .graph import Transition, TransitionType
 from .graph import State, StateType
 
 
+
 @pytest.fixture
 def transitions() -> tuple:
     transition1 = Transition(name="test_transition_1",
@@ -121,6 +122,7 @@ def test_get_reception_transition(normal_state:State, transitions):
     assert transitions[3] == reception[0]
     
     
+
 def test_set_transition(normal_state:State, transitions):
     new_transition = Transition(name="new_transition",
                             next_state="new_transition_next",

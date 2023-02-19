@@ -14,6 +14,7 @@ import pytest
 from .graph import Transition, TransitionType
 
 
+
 @pytest.fixture
 def normal_transition() -> Transition:
     transition = Transition(name="test_transition",

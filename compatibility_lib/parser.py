@@ -66,7 +66,9 @@ TRANSITION_PARAM_KEY = "params"
 TRANSITION_NEXT_STATE_KEY = "next_state"
 
 # create logger
+
 logger = logging.getLogger("PARSER")
+
 #logger.setLevel(logging.DEBUG)
 logger.setLevel(logging.INFO)
 #logger.setLevel(logging.WARNING)
@@ -79,6 +81,7 @@ ch.setLevel(logging.DEBUG)
 
 # create formatter
 formatter = logging.Formatter('%(name)s - %(funcName)s - %(levelname)s - %(message)s')
+
 
 # add formatter to ch
 ch.setFormatter(formatter)
