@@ -41,7 +41,7 @@ logger.addHandler(ch)
 class TransitionType(Enum):
     TAU = auto()
     EMISSION = auto()
-    RECPTION = auto()
+    RECEPTION = auto()
 
 class StateType(Enum):
     INIT = auto()
@@ -117,8 +117,8 @@ class Transition():
 class State():
     def __init__(self, name: str,
                  type: StateType,
-                 incoming: list = [],
-                 outgoing: list = []) -> None:
+                 incoming: list = None,
+                 outgoing: list = None) -> None:
         """Constructor of the State class
         Args:
             name (str): name of the state
@@ -132,13 +132,22 @@ class State():
         """
         self._name = name
         self._type = type
-        self._incoming = incoming
-        self._outgoing = outgoing
         
-        if self._type == StateType.INIT and self._incoming:
+        if incoming == None:
+            self._incoming = []
+        else:
+            self._incoming = incoming
+            
+        if outgoing == None:
+            self._outgoing = []
+        else:
+            self._outgoing = outgoing 
+        
+        if (self._type == StateType.INIT) and (self._incoming != []):
             raise Exception("Initial state does not have incoming transition")
     
-        if self._type == StateType.FINAL and self._outgoing:
+        if (self._type == StateType.FINAL) and (self._outgoing != []):
+            logger.debug("outgoing transition = {}".format(self._outgoing))
             raise Exception("Final state does not have outgoing transition")
 
     def add_incoming_transition(self, transition: Transition):
@@ -153,11 +162,9 @@ class State():
         if transition is None:
             return
         
+        self._incoming.append(transition)
         logger.debug("add new incoming transition [name = {}]".format(transition.name))
-        if self._type == StateType.INIT:
-            raise Exception("Initial state does not have incoming transition")
-        else:
-            self._incoming.append(transition)
+        
     
     def add_outgoing_transition(self, transition: Transition):
         """Add an outgoing transition
@@ -290,6 +297,33 @@ class State():
         """
         return self._name
     
+    def print_state(self):
+        print("*************************************************************")
+        print("State report")
+        print("Name: {}".format(self._name))
+        print("Type: {}".format(self._type))
+        
+        print("Incoming Transitions:")
+        for transition in self._incoming:
+            print("    ---------------------------------------")
+            print("    Name: {}".format(transition.name))
+            print("    Type: {}".format(transition.type))
+            print("    num of params: {}".format(len(transition.params)))
+            print("    params:")
+            for param in transition.params:
+                print("        {}".format(param))
+        
+        print("Outgoing Transitions:")
+        for transition in self._outgoing:
+            print("    ---------------------------------------")
+            print("    Name: {}".format(transition.name))
+            print("    Type: {}".format(transition.type))
+            print("    num of params: {}".format(len(transition.params)))
+            print("    params:")
+            for param in transition.params:
+                print("        {}".format(param))
+            
+            
 class Graph():
     def __init__(self, name: str, states: list = []) -> None:
         """Constructor of Graph class

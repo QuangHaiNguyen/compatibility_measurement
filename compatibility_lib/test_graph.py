@@ -23,7 +23,7 @@ def transitions() -> tuple:
                             params=["param1:type1", "param2:type2", "param3:type3"])
     transition2 = Transition(name="test_transition_2",
                             next_state="next_state_2",
-                            type=TransitionType.RECPTION,
+                            type=TransitionType.RECEPTION,
                             params=["param1:type1", "param2:type2"])
     transition3 = Transition(name="test_transition_3",
                             next_state="next_state_3",
@@ -31,7 +31,7 @@ def transitions() -> tuple:
                             params=["param1:type1", "param2:type2", "param3:type3"])
     transition4 = Transition(name="test_transition_4",
                             next_state="next_state_4",
-                            type=TransitionType.RECPTION,
+                            type=TransitionType.RECEPTION,
                             params=["param1:type1", "param2:type2"])
     return (transition1, transition2, transition3, transition4)
 
