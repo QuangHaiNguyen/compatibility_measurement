@@ -18,7 +18,7 @@ from enum import Enum, auto
 import logging
 
 # create logger
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("GRAPH")
 logger.setLevel(logging.DEBUG)
 #logger.setLevel(logging.INFO)
 #logger.setLevel(logging.WARNING)
@@ -30,7 +30,7 @@ ch = logging.StreamHandler()
 ch.setLevel(logging.DEBUG)
 
 # create formatter
-formatter = logging.Formatter('%(name)s - %(levelname)s - %(message)s')
+formatter = logging.Formatter('%(name)s - %(funcName)s - %(levelname)s - %(message)s')
 
 # add formatter to ch
 ch.setFormatter(formatter)
@@ -245,6 +245,37 @@ class State():
         """
         return self._outgoing
     
+    
+    def get_outgoing_emission_list(self) -> list:
+        """Return the list of outgoing emission transition
+
+        Returns:
+            list: emission transition
+        """
+        emission = []
+        
+        for transition in self._outgoing:
+            if transition.type == TransitionType.EMISSION:
+                emission.append(transition)
+
+        return emission
+    
+    
+    def get_outgoing_reception_list(self) -> list:
+        """Return the list of outgoing reception transition
+
+        Returns:
+            list: reception transition
+        """
+        reception = []
+        
+        for transition in self._outgoing:
+            if transition.type == TransitionType.RECEPTION:
+                reception.append(transition)
+
+        return reception
+    
+    
     def get_num_of_incoming_transistions(self) -> int:
         """Get number of incoming transition
 
@@ -325,7 +356,7 @@ class State():
             
             
 class Graph():
-    def __init__(self, name: str, states: list = []) -> None:
+    def __init__(self, name: str, states: list = None) -> None:
         """Constructor of Graph class
 
         Args:
@@ -333,7 +364,10 @@ class Graph():
             states (list, optional): states of the graph. Defaults to [].
         """
         self._name = name
-        self._states = states
+        if states == None:
+            self._states = []
+        else:
+            self._states = states
         
     def add_state(self, state: State):
         """Add new state to the graph
@@ -376,6 +410,21 @@ class Graph():
             list: state list
         """
         return self._states
+    
+    def print_graph(self):
+        print()
+        print("####################################################################################")
+        print("#")
+        print("# Graph Name: {}".format(self._name))
+        print("# Number of states: {}".format(len(self._states)))
+        print("#")
+        print("####################################################################################")
+        print("#")
+        for state in self._states:
+            state.print_state()
+        print("#")
+        print("####################################################################################")
+        print()
         
     
 if __name__ == '__main__':

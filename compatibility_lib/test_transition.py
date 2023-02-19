@@ -11,7 +11,7 @@ __status__ = "Development"
 """
 
 import pytest
-from graph import Transition, TransitionType
+from .graph import Transition, TransitionType
 
 
 @pytest.fixture
