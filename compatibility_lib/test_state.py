@@ -23,7 +23,7 @@ def transitions() -> tuple:
                             params=["param1:type1", "param2:type2", "param3:type3"])
     transition2 = Transition(name="test_transition_2",
                             next_state="next_state_2",
-                            type=TransitionType.RECPTION,
+                            type=TransitionType.RECEPTION,
                             params=["param1:type1", "param2:type2"])
     transition3 = Transition(name="test_transition_3",
                             next_state="next_state_3",
@@ -31,7 +31,7 @@ def transitions() -> tuple:
                             params=["param1:type1", "param2:type2", "param3:type3"])
     transition4 = Transition(name="test_transition_4",
                             next_state="next_state_4",
-                            type=TransitionType.RECPTION,
+                            type=TransitionType.RECEPTION,
                             params=["param1:type1", "param2:type2"])
     return (transition1, transition2, transition3, transition4)
 
@@ -110,7 +110,7 @@ def test_get_transition(normal_state:State, transitions):
 def test_set_transition(normal_state:State, transitions):
     new_transition = Transition(name="new_transition",
                             next_state="new_transition_next",
-                            type=TransitionType.RECPTION,
+                            type=TransitionType.RECEPTION,
                             params=["param1:type1", "param2:type2"])
     
     normal_state.add_incoming_transition(new_transition)
@@ -155,17 +155,18 @@ def test_create_final_state_fail(transitions):
 def test_add_incoming_transition_to_init_state(init_state, transitions):
     new_transition = Transition(name="new_transition",
                             next_state="new_transition_next",
-                            type=TransitionType.RECPTION,
+                            type=TransitionType.RECEPTION,
                             params=["param1:type1", "param2:type2"])
     
-    with pytest.raises(Exception):
-        init_state.add_incoming_transition(new_transition)
+    init_state.add_incoming_transition(new_transition)
+    
+    assert init_state.get_num_of_incoming_transistions() == 1
      
         
 def test_add_outgoing_transition_to_final_state(final_state, transitions):
     new_transition = Transition(name="new_transition",
                             next_state="new_transition_next",
-                            type=TransitionType.RECPTION,
+                            type=TransitionType.RECEPTION,
                             params=["param1:type1", "param2:type2"])
     
     with pytest.raises(Exception):
