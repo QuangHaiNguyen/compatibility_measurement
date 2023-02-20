@@ -277,7 +277,6 @@ def create_graph(input_path: str) -> Graph:
             add_incoming_transitions_to_states(states)
             
             for state in states:
-                state.print_state()
                 ret_graph.add_state(state)
     
     logger.info("create graph = {} success".format(ret_graph._name))

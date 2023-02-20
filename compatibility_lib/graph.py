@@ -276,6 +276,37 @@ class State():
 
         return reception
     
+    
+    def get_outgoing_tau_list(self):
+        """Return the list of outgoing tau transition
+
+        Returns:
+            list: tau transition
+        """
+        tau = []
+        
+        for transition in self._outgoing:
+            if transition.type == TransitionType.TAU:
+                tau.append(transition)
+
+        return tau
+    
+    
+    def get_imcoming_tau_list(self):
+        """Return the list of incoming tau transition
+
+        Returns:
+            list: tau transition
+        """
+        tau = []
+        
+        for transition in self._incoming:
+            if transition.type == TransitionType.TAU:
+                tau.append(transition)
+
+        return tau
+
+    
     def get_num_of_incoming_transistions(self) -> int:
         """Get number of incoming transition
 
