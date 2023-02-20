@@ -21,26 +21,27 @@ import logging
 import click
 import os
 
-# create logger
+
 graph_logger = logging.getLogger("GRAPH")
-graph_logger.setLevel(logging.DEBUG)
-graph_logger.setLevel(logging.INFO)
-graph_logger.setLevel(logging.WARNING)
-graph_logger.setLevel(logging.ERROR)
+#graph_logger.setLevel(logging.DEBUG)
+#graph_logger.setLevel(logging.INFO)
+#graph_logger.setLevel(logging.WARNING)
+#graph_logger.setLevel(logging.ERROR)
 graph_logger.setLevel(logging.CRITICAL)
 
 parser_logger = logging.getLogger("PARSER")
-parser_logger.setLevel(logging.DEBUG)
-parser_logger.setLevel(logging.INFO)
-parser_logger.setLevel(logging.WARNING)
-parser_logger.setLevel(logging.ERROR)
+#parser_logger.setLevel(logging.DEBUG)
+#parser_logger.setLevel(logging.INFO)
+#parser_logger.setLevel(logging.WARNING)
+#parser_logger.setLevel(logging.ERROR)
 parser_logger.setLevel(logging.CRITICAL)
 
+# create logger
 logger = logging.getLogger("COMPATIBILITY")
-logger.setLevel(logging.DEBUG)
-logger.setLevel(logging.INFO)
-logger.setLevel(logging.WARNING)
-logger.setLevel(logging.ERROR)
+#logger.setLevel(logging.DEBUG)
+#logger.setLevel(logging.INFO)
+#logger.setLevel(logging.WARNING)
+#logger.setLevel(logging.ERROR)
 logger.setLevel(logging.CRITICAL)
 
 # create console handler and set level to debug
@@ -172,7 +173,7 @@ def calculate_bw_propation(state1: State,
         raise Exception("tau calculation is not yet supported")
     
     bw_propagation = (d_bw_1 + d_bw_2)/2
-    logger.info("fw_propation({},{}) = {}".format(state1.get_name(), state2.get_name(), bw_propagation))
+    logger.info("bw_propation({},{}) = {}".format(state1.get_name(), state2.get_name(), bw_propagation))
     
     return bw_propagation
 
@@ -307,10 +308,7 @@ def main():
 @click.option("--graph", nargs = 2, help="path to the json file containing the graph")
 @click.option("--iterate", help="number of iteration", default = 1)
 @click.option("--output", help="file to store the calculation", default = "result.txt")
-def compatibility_calculation(graph, iterate, output):
-    print("")
-    print("===================================================================")
-    
+def compatibility_calculation(graph, iterate, output):  
     if(len(graph) != 2):
         logger.error("Invalid number of graph. Must be 2")
     else:
@@ -318,6 +316,18 @@ def compatibility_calculation(graph, iterate, output):
         
         graph1 = create_graph(path1)
         graph2 = create_graph(path2)
+        
+        #Fancy banner
+        print("")
+        print("")
+        print("#################################################################")
+        print("#")
+        print("# Compatibility Calculation")
+        print("# Author: {}".format(__author__))
+        print("# Version: {}".format(__version__))
+        print("# Status: {}".format(__status__))
+        print("#")
+        print("#################################################################")
         
         print("")
         print("GRAPHS GENERATION REPORT")
