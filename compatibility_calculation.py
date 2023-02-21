@@ -39,9 +39,9 @@ parser_logger.setLevel(logging.CRITICAL)
 # create logger
 logger = logging.getLogger("COMPATIBILITY")
 #logger.setLevel(logging.DEBUG)
-#logger.setLevel(logging.INFO)
-#logger.setLevel(logging.WARNING)
-#logger.setLevel(logging.ERROR)
+logger.setLevel(logging.INFO)
+logger.setLevel(logging.WARNING)
+logger.setLevel(logging.ERROR)
 logger.setLevel(logging.CRITICAL)
 
 # create console handler and set level to debug
@@ -78,7 +78,7 @@ def calculate_lab_comp(transition1:Transition, transition2:Transition) -> float:
     logger.debug("list of datatypes in message = {}: {}".format(transition1.name, datatypes1))
     logger.debug("list of datatypes in message = {}: {}".format(transition2.name,datatypes2))
     
-    if transition1.name == transition2.name:
+    if transition1.name == transition2.name and transition1.type != transition2.type:
         num_of_unshare_type = num_of_unshare(datatypes1, datatypes2)
         logger.debug("lab_comp = 1 - ({}/6*({} + {}))".format(num_of_unshare_type,
                                                                     len(transition1.params),
@@ -235,6 +235,33 @@ def calculate_w1_w2_w3(state1:State, state2:State) -> tuple:
     
     return (w1, w2, w3)
 
+def calculate_w1_w2_w3_ver2(state1:State, state2:State) -> tuple:
+    num_of_best_matching_outgoing = 0
+    num_of_best_matching_incomming = 0
+    w3 = 0
+    logger.info("calculate_w1_w2_w3_ver2({},{})".format(state1.get_name(),state2.get_name() ))
+    
+    for incoming1 in state1.get_incoming_transitions_list():
+        for incoming2 in state1.get_incoming_transitions_list():
+            if incoming1.name == incoming2.name and incoming1.type == incoming2.type:
+                num_of_best_matching_incomming += 1
+            
+    for outgoing1 in state1.get_outgoing_transitions_list():
+        for outgoing2 in state1.get_outgoing_transitions_list():
+            if outgoing1.name == outgoing2.name and outgoing1.type == outgoing2.type:
+                num_of_best_matching_outgoing += 1
+
+    if (state1.get_imcoming_tau_list() == [] and state2.get_imcoming_tau_list() == [] and
+        state1.get_outgoing_tau_list() == [] and state2.get_outgoing_tau_list() == []):
+        w3 = 1
+    else:
+        raise Exception("tau is not supported")
+    
+    logger.info("w1 = {}, w2 = {}, w3 = {}".format(num_of_best_matching_outgoing, num_of_best_matching_incomming, w3))
+    return(num_of_best_matching_outgoing,num_of_best_matching_incomming, w3)
+                
+                
+
 def create_default_comp_matrix(graph1:Graph, graph2:Graph):
     data = {}
     index = []
@@ -274,8 +301,10 @@ def calculate_compatibility(graph1:Graph, graph2:Graph, last_comp_matrix:pd.Data
                 obs_comp = calculate_obs_comp(state1, state2, last_comp_matrix)
                 fw_propagation = calculate_fw_propation(state1, state2, obs_comp, graph1, graph2, last_comp_matrix)
                 bw_propagation = calculate_bw_propation(state1, state2, obs_comp, graph1, graph2, last_comp_matrix)
-                w1,w2,w3 = calculate_w1_w2_w3(state1, state2)
-                
+
+                #w1,w2,w3 = calculate_w1_w2_w3(state1, state2)
+                w1,w2,w3 = calculate_w1_w2_w3_ver2(state1, state2)
+
                 logger.info("")
                 logger.info("=== CONCLUCSION ===")
                 state_comp = (w1*fw_propagation + w2*bw_propagation + w3*calculate_state_nature(state1, state2))/(w1 + w2 + w3)
