@@ -7,7 +7,7 @@ __license__ = "GPL"
 __version__ = "0.0.1"
 __maintainer__ = "Quang Hai"
 __email__ = "hai.nguyen.quang@outlook.com"
-__status__ = "Development"
+__status__ = "Prototype"
 
 """ Calculate the compatibility between two graphs
 """
