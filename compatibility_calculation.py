@@ -44,6 +44,7 @@ logger.setLevel(logging.DEBUG)
 #logger.setLevel(logging.ERROR)
 #logger.setLevel(logging.CRITICAL)
 
+
 # create console handler and set level to debug
 ch = logging.StreamHandler()
 ch.setLevel(logging.DEBUG)
