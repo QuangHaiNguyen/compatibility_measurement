@@ -38,11 +38,11 @@ parser_logger.setLevel(logging.CRITICAL)
 
 # create logger
 logger = logging.getLogger("COMPATIBILITY")
-#logger.setLevel(logging.DEBUG)
-logger.setLevel(logging.INFO)
-logger.setLevel(logging.WARNING)
-logger.setLevel(logging.ERROR)
-logger.setLevel(logging.CRITICAL)
+logger.setLevel(logging.DEBUG)
+#logger.setLevel(logging.INFO)
+#logger.setLevel(logging.WARNING)
+#logger.setLevel(logging.ERROR)
+#logger.setLevel(logging.CRITICAL)
 
 # create console handler and set level to debug
 ch = logging.StreamHandler()
@@ -202,6 +202,10 @@ def calculate_obs_comp(state1:State, state2:State, last_comp_matrix:pd.DataFrame
                                                 sum2,
                                                 len(state1.get_outgoing_emission_list()),
                                                 len(state2.get_outgoing_emission_list())))
+        
+    elif (state1._type == StateType.FINAL) and (state2._type == StateType.FINAL):
+        obs_comp = 1
+        logger.info("Final state -> obs_comp = {}".format(obs_comp))
     else:
         obs_comp = 0
         logger.info("both states have no emission transition => obs_comp = {}".format(obs_comp))
@@ -242,13 +246,24 @@ def calculate_w1_w2_w3_ver2(state1:State, state2:State) -> tuple:
     logger.info("calculate_w1_w2_w3_ver2({},{})".format(state1.get_name(),state2.get_name() ))
     
     for incoming1 in state1.get_incoming_transitions_list():
-        for incoming2 in state1.get_incoming_transitions_list():
-            if incoming1.name == incoming2.name and incoming1.type == incoming2.type:
+        for incoming2 in state2.get_incoming_transitions_list():
+            logger.debug("    Checking({}-{},{}-{})".format(incoming1.name,
+                                                            incoming1.type,
+                                                            incoming2.name,
+                                                            incoming2.type))
+            
+            if incoming1.name == incoming2.name and incoming1.type != incoming2.type:
+                logger.debug("    -->best matching incoming found({},{})".format(incoming1.name,incoming2.name ))
                 num_of_best_matching_incomming += 1
             
     for outgoing1 in state1.get_outgoing_transitions_list():
-        for outgoing2 in state1.get_outgoing_transitions_list():
-            if outgoing1.name == outgoing2.name and outgoing1.type == outgoing2.type:
+        for outgoing2 in state2.get_outgoing_transitions_list():
+            logger.debug("    Checking({}-{},{}-{})".format(outgoing1.name,
+                                                            outgoing1.type,
+                                                            outgoing2.name,
+                                                            outgoing2.type))
+            if outgoing1.name == outgoing2.name and outgoing1.type != outgoing2.type:
+                logger.debug("    -->best matching outgoing found({},{})".format(outgoing1.name,outgoing2.name ))
                 num_of_best_matching_outgoing += 1
 
     if (state1.get_imcoming_tau_list() == [] and state2.get_imcoming_tau_list() == [] and
@@ -302,8 +317,10 @@ def calculate_compatibility(graph1:Graph, graph2:Graph, last_comp_matrix:pd.Data
                 fw_propagation = calculate_fw_propation(state1, state2, obs_comp, graph1, graph2, last_comp_matrix)
                 bw_propagation = calculate_bw_propation(state1, state2, obs_comp, graph1, graph2, last_comp_matrix)
 
-                #w1,w2,w3 = calculate_w1_w2_w3(state1, state2)
-                w1,w2,w3 = calculate_w1_w2_w3_ver2(state1, state2)
+                w1,w2,w3 = calculate_w1_w2_w3(state1, state2)
+                
+                #below calculation is unused
+                #w1,w2,w3 = calculate_w1_w2_w3_ver2(state1, state2)
 
                 logger.info("")
                 logger.info("=== CONCLUCSION ===")
@@ -337,7 +354,17 @@ def main():
 @click.option("--graph", nargs = 2, help="path to the json file containing the graph")
 @click.option("--iterate", help="number of iteration", default = 1)
 @click.option("--output", help="file to store the calculation", default = "result.txt")
-def compatibility_calculation(graph, iterate, output):  
+@click.option("--log_level", help="logging level: info, debug, or none", default = "none")
+def compatibility_calculation(graph, iterate, output, log_level):
+    if log_level == "none":
+        logger.setLevel(logging.CRITICAL)
+    elif log_level == "info":
+        logger.setLevel(logging.INFO)
+    elif log_level == "debug":
+        logger.setLevel(logging.DEBUG)
+    else:
+        pass
+      
     if(len(graph) != 2):
         logger.error("Invalid number of graph. Must be 2")
     else:
@@ -378,7 +405,7 @@ def compatibility_calculation(graph, iterate, output):
             os.remove(output)
             
         
-        print("Compatibility calculation is complete. The result is exported to result.txt")
+        print("Compatibility calculation is complete. The result is exported to {}".format)
         print("Results:")
         with open(output, "a") as file:
             for i in range(len(compatible_matrices)):
